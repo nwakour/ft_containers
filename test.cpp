@@ -6,7 +6,7 @@
 /*   By: nwakour <nwakour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/06 17:45:42 by nwakour           #+#    #+#             */
-/*   Updated: 2022/04/16 21:31:36 by nwakour          ###   ########.fr       */
+/*   Updated: 2022/05/03 18:46:01 by nwakour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 #include "set.hpp"
 #include <memory>
 #include <set>
-
+#include <map>
 class B {
 public:
 	char *l;
@@ -62,12 +62,11 @@ public:
 
 int main()
 {
-	ft::set<int>s;
-
-	ft::set<int>::iterator it = s.begin();
-	ft::set<int>::const_iterator it2 = s.end();
-
-	std::cout << "it == it2: " << (it == it2) << "\n";
+	std::set<B> s;
+	std::map<int,B> m;
+	
+	s.find(B(1));
+	m.find(1);
 	// std::set<int, std::plus<int> > mp;
 	// mp.insert(mp.begin(),1);
 	// ft::set<int, std::plus<int> > p;

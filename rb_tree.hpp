@@ -6,7 +6,7 @@
 /*   By: nwakour <nwakour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/08 16:17:12 by nwakour           #+#    #+#             */
-/*   Updated: 2022/04/06 22:32:23 by nwakour          ###   ########.fr       */
+/*   Updated: 2022/05/03 18:56:42 by nwakour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,8 +113,8 @@ namespace ft
 			clear();
 			_node_alloc.deallocate(_Nnull, 1);
 		}
-	
-		size_type count (const value_type& val) const
+		template<typename key>
+		size_type count (const key& val) const
 		{
 			node_ptr x = _root;
 			while (x != _Nnull)
@@ -210,9 +210,41 @@ namespace ft
 			x->parent = y;
 		}
 
+		template<typename key>
+		node_ptr find(const key& val)
+		{
+			node_ptr x = _root;
+			while (x != _Nnull)
+			{
+				if (_comp(val, x->val))
+					x = x->left;
+				else if (_comp(x->val, val))
+					x = x->right;
+				else
+					return (x);
+			}
+			return (_Nnull);
+		}
+		
 		node_ptr find(const value_type& val) const
 		{
 			node_ptr x = _root;
+			while (x != _Nnull)
+			{
+				if (_comp(val, x->val))
+					x = x->left;
+				else if (_comp(x->val, val))
+					x = x->right;
+				else
+					return (x);
+			}
+			return (_Nnull);
+		}
+		
+		template<typename key>
+		const_pointer find(const key& val) const
+		{
+			const_pointer x = _root;
 			while (x != _Nnull)
 			{
 				if (_comp(val, x->val))
@@ -377,9 +409,6 @@ namespace ft
 			}
 			clear_node(del);
 			--_size;
-			
-			// printTree();
-			// std::cout << "\n";
 			if (iblack)
 				balance_erase(x);
 			_Nnull->parent = _Nnull->left = _Nnull;
@@ -455,8 +484,8 @@ namespace ft
 			// printTree();
 			// std::cout << "\n";
 		}
-
-		bool erase(const value_type& val)
+		template<typename Key>
+		bool erase(const Key& val)
 		{
 			node_ptr x = find(val);
 			if (x == _Nnull)
@@ -464,7 +493,8 @@ namespace ft
 			erase(x);
 			return true;
 		}
-		iterator lower_bound(const value_type& val) const
+		template<typename Key>
+		node_ptr lower_bound(const Key& val)
 		{
 			node_ptr x = _root;
 			node_ptr y = _Nnull;
@@ -478,9 +508,45 @@ namespace ft
 				else
 					x = x->right;
 			}
-			return iterator(y, _Nnull);
+			return y;
 		}
-		iterator upper_bound(const value_type& val) const
+
+		node_ptr lower_bound(const value_type& val) const
+		{
+			node_ptr x = _root;
+			node_ptr y = _Nnull;
+			while (x != _Nnull)
+			{
+				if (!_comp(x->val , val))
+				{
+					y = x;
+					x = x->left;
+				}
+				else
+					x = x->right;
+			}
+			return y;
+		}
+
+		template<typename Key>
+		const_pointer lower_bound(const Key& val) const
+		{
+			const_pointer x = _root;
+			const_pointer y = _Nnull;
+			while (x != _Nnull)
+			{
+				if (!_comp(x->val , val))
+				{
+					y = x;
+					x = x->left;
+				}
+				else
+					x = x->right;
+			}
+			return y;
+		}
+
+		node_ptr upper_bound(const value_type& val) const
 		{
 			node_ptr x = _root;
 			node_ptr y = _Nnull;
@@ -494,8 +560,67 @@ namespace ft
 				else
 					x = x->right;
 			}
-			return iterator(y, _Nnull);
+			return y;
 		}
+		
+		template<typename Key>
+		node_ptr upper_bound(const Key& val)
+		{
+			node_ptr x = _root;
+			node_ptr y = _Nnull;
+			while (x != _Nnull)
+			{
+				if (_comp(val, x->val))
+				{
+					y = x;
+					x = x->left;
+				}
+				else
+					x = x->right;
+			}
+			return y;
+		}
+
+		template<typename Key>
+		const_pointer upper_bound(const Key& val) const
+		{
+			const_pointer x = _root;
+			const_pointer y = _Nnull;
+			while (x != _Nnull)
+			{
+				if (_comp(val, x->val))
+				{
+					y = x;
+					x = x->left;
+				}
+				else
+					x = x->right;
+			}
+			return y;
+		}
+
+		template<typename Key>
+		ft::pair<iterator,iterator> equal_range(const Key& val)
+		{
+			node_ptr x = _root;
+			node_ptr y = _Nnull;
+			while (x != _Nnull)
+			{
+				if (_comp(x->val, val))
+				{
+					x = x->right;
+				}
+				else if (_comp(val, x->val))
+				{
+					y = x;
+					x = x->left;
+				}
+				else
+					return (ft::make_pair(iterator(x, _Nnull), iterator(y, _Nnull)));
+			}
+			return (ft::make_pair(iterator(y, _Nnull), iterator(y, _Nnull)));
+		}
+
 		ft::pair<iterator,iterator> equal_range(const value_type& val) const
 		{
 			node_ptr x = _root;
@@ -516,6 +641,29 @@ namespace ft
 			}
 			return (ft::make_pair(iterator(y, _Nnull), iterator(y, _Nnull)));
 		}
+	
+		template<typename Key>
+		ft::pair<const_iterator,const_iterator> equal_range(const Key& val) const
+		{
+			node_ptr x = _root;
+			node_ptr y = _Nnull;
+			while (x != _Nnull)
+			{
+				if (_comp(x->val, val))
+				{
+					x = x->right;
+				}
+				else if (_comp(val, x->val))
+				{
+					y = x;
+					x = x->left;
+				}
+				else
+					return (ft::make_pair(const_iterator(x, _Nnull), const_iterator(y, _Nnull)));
+			}
+			return (ft::make_pair(const_iterator(y, _Nnull), const_iterator(y, _Nnull)));
+		}
+
 		iterator begin()
 		{
 			if (_root == _Nnull)

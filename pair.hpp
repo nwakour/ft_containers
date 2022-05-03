@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pair.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tenshi <tenshi@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nwakour <nwakour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/24 19:48:53 by nwakour           #+#    #+#             */
-/*   Updated: 2022/03/29 23:06:36 by tenshi           ###   ########.fr       */
+/*   Updated: 2022/05/03 17:10:31 by nwakour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -181,7 +181,35 @@ namespace ft
 			++first2;
 		}
 		return true;
-	};
+	}
+	
+	template <class Key, class T, class Compare>
+	class map_value_compare
+	{
+		private:
+			Compare _comp;
+		public:
+		map_value_compare():_comp(){}
+		~map_value_compare(){}
+		map_value_compare(const Compare &c):_comp(c){}
+		map_value_compare &operator=(const map_value_compare &c)
+		{
+			_comp = c._comp;
+			return *this;
+		}
 
+		bool operator()(const Key &k, const T &v) const
+		{
+			return _comp(k, v.first);
+		}
+		bool operator()(const T &v, const Key &k) const
+		{
+			return _comp(v.first, k);
+		}
+		bool operator()(const T &v1, const T &v2) const
+		{
+			return _comp(v1.first, v2.first);
+		}
+	};
 }
 #endif

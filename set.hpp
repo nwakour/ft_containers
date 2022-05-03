@@ -6,7 +6,7 @@
 /*   By: nwakour <nwakour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/29 18:18:04 by nwakour           #+#    #+#             */
-/*   Updated: 2022/04/06 21:53:38 by nwakour          ###   ########.fr       */
+/*   Updated: 2022/05/03 18:20:30 by nwakour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -179,11 +179,11 @@ namespace ft
 		}
 		iterator upper_bound(const value_type& val) const
 		{
-			return (_tree.upper_bound(val));
+			return (iterator(_tree.upper_bound(val), _tree.get__Nnull()));
 		}
 		iterator lower_bound(const value_type& val) const
 		{
-			return (_tree.lower_bound(val));
+			return (iterator(_tree.lower_bound(val), _tree.get__Nnull()));
 		}
 		ft::pair<iterator,iterator> equal_range (const value_type& val) const
 		{

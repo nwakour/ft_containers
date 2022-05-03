@@ -6,7 +6,7 @@
 /*   By: nwakour <nwakour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/31 17:32:45 by nwakour           #+#    #+#             */
-/*   Updated: 2022/04/06 22:29:33 by nwakour          ###   ########.fr       */
+/*   Updated: 2022/05/03 18:10:40 by nwakour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ namespace ft
 		public:
 		typedef Key 														key_type;
 		typedef T															mapped_type;
-		typedef pair<const key_type, mapped_type>							value_type;
+		typedef ft::pair<const key_type, mapped_type>							value_type;
 		typedef Compare														key_compare;
 		typedef	class value_compare : public std::binary_function<value_type, value_type, bool>
 		{
@@ -40,6 +40,7 @@ namespace ft
 					return comp(x.first, y.first);
   				}
 		} value_compare;
+		typedef ft::map_value_compare<key_type, value_type, key_compare>	tree_compare;
 		typedef Alloc														allocator_type;
 		typedef typename allocator_type::reference							reference;
 		typedef typename allocator_type::const_reference					const_reference;
@@ -47,7 +48,7 @@ namespace ft
 		typedef typename allocator_type::difference_type					difference_type;
 		typedef typename allocator_type::pointer							pointer;
 		typedef typename allocator_type::const_pointer						const_pointer;
-		typedef ft::rb_tree<value_type, value_compare, allocator_type>		rb_tree;
+		typedef ft::rb_tree<value_type, tree_compare, allocator_type>		rb_tree;
 		typedef typename rb_tree::iterator									iterator;
 		typedef typename rb_tree::const_iterator							const_iterator;
 		typedef typename rb_tree::reverse_iterator							reverse_iterator;
@@ -181,11 +182,11 @@ namespace ft
 		//! Operations
 		iterator find(const key_type& val)
 		{
-			return (_tree.find(val));
+			return (iterator(_tree.find(val), _tree.get__Nnull()));
 		}
 		const_iterator find(const key_type& val) const
 		{
-			return (_tree.find(val));
+			return (const_iterator(_tree.find(val), _tree.get__Nnull()));
 		}
 		size_type count(const key_type& val) const
 		{
@@ -193,19 +194,19 @@ namespace ft
 		}
 		iterator upper_bound(const key_type& val)
 		{
-			return (_tree.upper_bound(val));
+			return (iterator(_tree.upper_bound(val), _tree.get__Nnull()));
 		}
 		const_iterator upper_bound(const key_type& val) const
 		{
-			return (_tree.upper_bound(val));
+			return (const_iterator(_tree.upper_bound(val), _tree.get__Nnull()));
 		}
 		iterator lower_bound(const key_type& val)
 		{
-			return (_tree.lower_bound(val));
+			return (iterator(_tree.lower_bound(val), _tree.get__Nnull()));
 		}
 		const_iterator lower_bound(const key_type& val) const
 		{
-			return (_tree.lower_bound(val));
+			return (const_iterator(_tree.lower_bound(val), _tree.get__Nnull()));
 		}
 		ft::pair<iterator,iterator> equal_range(const key_type& val)
 		{
