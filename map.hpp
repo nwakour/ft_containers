@@ -6,7 +6,7 @@
 /*   By: nwakour <nwakour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/31 17:32:45 by nwakour           #+#    #+#             */
-/*   Updated: 2022/05/03 18:10:40 by nwakour          ###   ########.fr       */
+/*   Updated: 2022/05/04 18:08:13 by nwakour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,7 +131,10 @@ namespace ft
 			return _tree.empty();
 		}
 		//! Element access
-		// mapped_type& operator[] (const key_type& k);
+		mapped_type& operator[] (const key_type& k)
+		{
+			return (_tree[k]->val.second);
+		}
 		//! Modifiers
 		pair<iterator,bool> insert (const value_type& val)
 		{
@@ -147,10 +150,9 @@ namespace ft
 				_tree.insert(*first);
 			}
 		}
-		
 		void erase (iterator position)
 		{
-			_tree.erase(*position);
+			_tree.erase(position);
 		}
 		size_type erase (const key_type& val)
 		{
@@ -158,12 +160,15 @@ namespace ft
 		}
 		void erase (iterator first, iterator last)
 		{
-			for(; first != last; ++first)
+			while (first != last)
 			{
-				_tree.erase(*first);
+				_tree.erase((first++));
 			}
 		}
-		// void swap (map& x);
+		void swap (map& x)
+		{
+			_tree.swap(x._tree);
+		}
 		void clear()
 		{
 			_tree.clear();

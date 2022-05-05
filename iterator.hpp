@@ -6,7 +6,7 @@
 /*   By: nwakour <nwakour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/03 16:22:49 by nwakour           #+#    #+#             */
-/*   Updated: 2022/05/03 18:35:00 by nwakour          ###   ########.fr       */
+/*   Updated: 2022/05/04 17:40:00 by nwakour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,9 +74,12 @@ class const_RB_Iterator
 			typedef const T*													pointer;
 			typedef ft::node<T>													node_type;
 			typedef typename node_type::const_node_ptr 							node_pointer;
+			
+			node_pointer _it;
 	private:
-		node_pointer _it;
 		node_pointer _Nnull;
+		
+		
 	public:
 		const_RB_Iterator() : _it(NULL), _Nnull(NULL){}
 		const_RB_Iterator(const node_pointer& it, const node_pointer& Nnull) : _it(it), _Nnull(Nnull){}
@@ -142,9 +145,9 @@ class RB_Iterator
 			typedef ft::node<T>													node_type;
 			typedef node_type* 													node_pointer;
 			typedef ft::const_RB_Iterator<T>									const_iterator;
-			
+			node_pointer _it;
 	private:
-		node_pointer _it;
+		
 		node_pointer _Nnull;
 	public:
 		RB_Iterator() : _it(NULL), _Nnull(NULL){}

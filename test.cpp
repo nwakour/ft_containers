@@ -6,7 +6,7 @@
 /*   By: nwakour <nwakour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/06 17:45:42 by nwakour           #+#    #+#             */
-/*   Updated: 2022/05/03 18:46:01 by nwakour          ###   ########.fr       */
+/*   Updated: 2022/05/05 17:37:54 by nwakour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,11 @@
 #include "pair.hpp"
 #include "rb_tree.hpp"
 #include "set.hpp"
+#include "map.hpp"
 #include <memory>
 #include <set>
 #include <map>
+
 class B {
 public:
 	char *l;
@@ -62,11 +64,14 @@ public:
 
 int main()
 {
-	std::set<B> s;
-	std::map<int,B> m;
-	
-	s.find(B(1));
-	m.find(1);
+	std::map<int,int> mp;
+	 for (int i = 0, j = 0; i < 2; ++i, ++j)
+        mp.insert(std::make_pair(i, j));
+	// mp.erase(mp.begin(), --mp.end());
+	mp.insert(mp.begin(), std::make_pair(3, 4));
+	// mp.erase(mp.begin());
+	// mp.erase(mp.begin());
+
 	// std::set<int, std::plus<int> > mp;
 	// mp.insert(mp.begin(),1);
 	// ft::set<int, std::plus<int> > p;

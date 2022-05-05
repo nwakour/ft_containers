@@ -6,7 +6,7 @@
 /*   By: nwakour <nwakour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/08 16:17:12 by nwakour           #+#    #+#             */
-/*   Updated: 2022/05/03 18:56:42 by nwakour          ###   ########.fr       */
+/*   Updated: 2022/05/05 13:48:07 by nwakour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -256,7 +256,44 @@ namespace ft
 			}
 			return (_Nnull);
 		}
-
+		template <typename key_type>
+		node_ptr operator[] (const key_type& k)
+		{
+			node_ptr x = _root;
+			node_ptr y = _Nnull;
+			
+			while (x != _Nnull)
+			{
+				y = x;
+				if (_comp(k, x->val))
+					x = x->left;
+				else if (_comp(x->val, k))
+					x = x->right;
+				else
+					return x;
+			}
+			node_ptr newnode = new_node(make_pair(k,value_type().second));
+			newnode->parent = y;
+			if (y == _Nnull)
+				_root = newnode;
+			else if (_comp(newnode->val, y->val))
+				y->left = newnode;
+			else
+				y->right = newnode;
+			++_size;
+			if (newnode->parent == _Nnull)
+				newnode->black();
+			else if(newnode->parent->parent == _Nnull)
+				;
+			else
+				balance_insert(newnode);
+			if (_Nnull->right == _Nnull)
+				_Nnull->right = _root->max_node(_Nnull);
+			else
+				_Nnull->right = _Nnull->right->max_node(_Nnull);
+			return newnode;
+		}
+		
 		ft::pair<iterator,bool> insert(node_ptr newnode)
 		{
 			node_ptr x = _root;
@@ -366,7 +403,19 @@ namespace ft
 				x->parent->right = y;
 			y->parent = x->parent;
 		}
-
+		void erase(iterator it)
+		{
+			erase(it._it);
+		}
+		template<typename Key>
+		bool erase(const Key& val)
+		{
+			node_ptr x = find(val);
+			if (x == _Nnull)
+				return false;
+			erase(x);
+			return true;
+		}
 		void erase(node_ptr del)
 		{
 			node_ptr x;
@@ -484,15 +533,7 @@ namespace ft
 			// printTree();
 			// std::cout << "\n";
 		}
-		template<typename Key>
-		bool erase(const Key& val)
-		{
-			node_ptr x = find(val);
-			if (x == _Nnull)
-				return false;
-			erase(x);
-			return true;
-		}
+		
 		template<typename Key>
 		node_ptr lower_bound(const Key& val)
 		{
@@ -699,6 +740,35 @@ namespace ft
 		const_reverse_iterator rend() const
 		{
 			return const_reverse_iterator(begin());
+		}
+
+		node_ptr insert_with_hint(node_ptr position, const value_type& val) // check if position is a valid place to insert val
+		{
+			if (position == _Nnull)
+				return insert(val);
+			if (_comp(val, position->val))
+			{
+				if (position->left == _Nnull)
+				{
+					position->left = new node(val, _Nnull, _Nnull, position);
+					return position->left;
+				}
+				else
+					return insert_with_hint(position->left, val);
+			}
+			else if (_comp(position->val, val))
+			{
+				if (position->right == _Nnull)
+				{
+					position->right = new node(val, _Nnull, _Nnull, position);
+					return position->right;
+				}
+				else
+					return insert_with_hint(position->right, val);
+			}
+			else
+				return position;
+					
 		}
 		void printHelper(node_ptr root, std::string indent, bool last) const
 		{
