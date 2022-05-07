@@ -6,7 +6,7 @@
 /*   By: nwakour <nwakour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/31 17:32:45 by nwakour           #+#    #+#             */
-/*   Updated: 2022/05/07 20:46:56 by nwakour          ###   ########.fr       */
+/*   Updated: 2022/05/07 21:42:26 by nwakour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -178,7 +178,7 @@ namespace ft
 		{
 			while (first != last)
 			{
-				_tree.erase((first++));
+				_tree.erase((first++)._it);
 			}
 		}
 		void swap (map& x)

@@ -6,7 +6,7 @@
 /*   By: nwakour <nwakour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/29 18:18:04 by nwakour           #+#    #+#             */
-/*   Updated: 2022/05/07 20:51:11 by nwakour          ###   ########.fr       */
+/*   Updated: 2022/05/07 21:47:49 by nwakour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ namespace ft
 		typedef ft::rb_tree<value_type, value_compare, allocator_type>		rb_tree;
 		typedef typename rb_tree::node_ptr									node_ptr;
 		typedef typename rb_tree::const_pointer								const_node_ptr;
-		typedef ft::RB_Iterator<value_type>									iterator;
+		typedef ft::const_RB_Iterator<value_type>									iterator;
 		typedef ft::const_RB_Iterator<value_type>							const_iterator;
 		typedef ft::reverse_iterator<iterator>								reverse_iterator;
 		typedef ft::reverse_iterator<const_iterator>						const_reverse_iterator;
@@ -152,7 +152,7 @@ namespace ft
 		{
 			while (first != last)
 			{
-				_tree.erase((first++));
+				_tree.erase((first++)._it);
 			}
 		}
 		void swap (set& x)

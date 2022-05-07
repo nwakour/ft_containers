@@ -6,7 +6,7 @@
 /*   By: nwakour <nwakour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/08 16:17:12 by nwakour           #+#    #+#             */
-/*   Updated: 2022/05/07 20:40:58 by nwakour          ###   ########.fr       */
+/*   Updated: 2022/05/07 21:53:09 by nwakour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -502,6 +502,7 @@ namespace ft
 				balance_erase(x);
 			_Nnull->parent = _Nnull->left = _Nnull;
 		}
+
 		void balance_erase(node_ptr x)
 		{
 			while (x != _root && x->is_black)
