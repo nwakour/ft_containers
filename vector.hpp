@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   vector.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tenshi <tenshi@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nwakour <nwakour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/06 14:04:22 by nwakour           #+#    #+#             */
-/*   Updated: 2022/03/29 22:38:23 by tenshi           ###   ########.fr       */
+/*   Updated: 2022/05/07 19:16:57 by nwakour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 #include <memory>
 #include "iterator.hpp"
-#include "pair.hpp"
+#include "utilities.hpp"
 // #include <stack>
 
 namespace ft
@@ -101,7 +101,7 @@ namespace ft
 		}
 
 		vector (const vector& x) : _start(NULL), _size(0), _capacity(0), _end(NULL), _alloc(allocator_type())
-		{
+		{   
 			*this = x;
 		}
 
@@ -379,7 +379,7 @@ namespace ft
 			}
 			else
 			{
-				if (!_size)
+				if (position == _end)
 					_alloc.construct(_end, val);
 				else
 				{
@@ -527,9 +527,14 @@ namespace ft
 						}
 						else
 						{
-							mycopy_basic(last - (lsize - (_size - diff)), last, _end, basic_len);
+							
+							ForwardIterator tmp = last;
+							std::advance(tmp, (lsize - (_size - diff)));
+							mycopy_basic(tmp, last, _end, basic_len);
 							mycopy_basic(_start + diff, _end, _end + lsize - (_size - diff), basic_len);
-							myassign_basic_front(first, first + (_size - diff), _start + diff, basic_len);
+							tmp = first;
+							std::advance(tmp, (_size - diff));
+							myassign_basic_front(first, tmp, _start + diff, basic_len);
 						}
 					}
 				}
@@ -596,13 +601,17 @@ namespace ft
 			assign(copy.begin(), copy.end());
 			return (*this);
 		}
+
+		value_type* data()
+		{
+			return(_start);
+		}
 		void swap(vector& v)
 		{
 			std::swap(_start, v._start);
 			std::swap(_end, v._end);
 			std::swap(_size, v._size);
 			std::swap(_capacity, v._capacity);
-			std::swap(_alloc, v._alloc);
 		}
 		private:
 			pointer				_start;

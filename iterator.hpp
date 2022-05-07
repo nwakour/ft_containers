@@ -6,7 +6,7 @@
 /*   By: nwakour <nwakour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/03 16:22:49 by nwakour           #+#    #+#             */
-/*   Updated: 2022/05/04 17:40:00 by nwakour          ###   ########.fr       */
+/*   Updated: 2022/05/07 19:40:21 by nwakour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -215,9 +215,10 @@ class RB_Iterator
 		typedef typename iterator_type::difference_type		difference_type;
 		typedef typename iterator_type::pointer						pointer;
 		typedef typename iterator_type::reference					reference;
+		typedef random_access_iterator<const T>						const_iterator;
 
-		private:
-			pointer _it;
+		// private:
+		pointer _it;
 		public:
 		random_access_iterator() : _it(NULL){}
 		random_access_iterator(const pointer& it) : _it(it) {}
@@ -228,9 +229,9 @@ class RB_Iterator
 
 		~random_access_iterator(){};
 
-		operator random_access_iterator<const T>() const
+		operator const_iterator() const
 		{
-			return(random_access_iterator<const T>(_it));
+			return(const_iterator(_it));
 		}
 
 		random_access_iterator &operator=(const random_access_iterator& copy){
@@ -291,6 +292,9 @@ class RB_Iterator
 		difference_type operator- (const random_access_iterator& rit) { 
 			return (this->_it - rit._it); }
 		
+		difference_type operator- (const const_iterator& rit) const { 
+			return (this->_it - rit._it); }
+		
 		random_access_iterator operator+ (difference_type n) const{
 			return (random_access_iterator(_it + n)); }
 			
@@ -330,7 +334,6 @@ template <class Iterator>
 			typedef	typename iterator_traits<iterator_type>::difference_type		difference_type;
 			typedef typename iterator_traits<iterator_type>::pointer				pointer;
 			typedef typename iterator_traits<iterator_type>::reference			reference;
-		private:
 			iterator_type	_it;
 		public:
 		
@@ -341,10 +344,8 @@ template <class Iterator>
 		explicit reverse_iterator( const iterator_type &x ) : _it(x){}
 	
 		template <class Iter>
-  		reverse_iterator (const reverse_iterator<Iter>& rev_it)
-		{
-			*this = *rev_it;
-		}
+  		reverse_iterator (const reverse_iterator<Iter>& rev_it) : _it(rev_it._it){}
+
 
 		template< class U >
 		reverse_iterator& operator=( const reverse_iterator<U>& other )
@@ -409,6 +410,9 @@ template <class Iterator>
 		reference& operator[](const difference_type &n) { 
 			return *(_it - n - 1);
 		}
+
+		difference_type operator- (const reverse_iterator& rit) { 
+			return (rit._it - this->_it); }
 	};
 
 	template< class Iterator1, class Iterator2 >
@@ -447,12 +451,6 @@ template <class Iterator>
 	reverse_iterator<Iter> operator+( typename reverse_iterator<Iter>::difference_type n, const reverse_iterator<Iter>& it)
 	{
 		return (it + n);
-	}
-
-	template< class Iterator >
-	typename reverse_iterator<Iterator>::difference_type operator-( const reverse_iterator<Iterator>& lhs, const reverse_iterator<Iterator>& rhs )
-	{
-		return (rhs.base() - lhs.base());
 	}
 }
 #endif

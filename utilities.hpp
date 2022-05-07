@@ -1,21 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pair.hpp                                           :+:      :+:    :+:   */
+/*   utilities.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nwakour <nwakour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/24 19:48:53 by nwakour           #+#    #+#             */
-/*   Updated: 2022/05/03 17:10:31 by nwakour          ###   ########.fr       */
+/*   Updated: 2022/05/07 20:38:52 by nwakour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef __PAIR__H__
-#define __PAIR__H__
+#ifndef __UTILITIES__H__
+#define __UTILITIES__H__
 
 #include <type_traits>
 #include "iterator.hpp"
-
 namespace ft
 {
 	template<typename T1, typename T2>
@@ -90,7 +89,7 @@ namespace ft
 	
 	template<>
 	struct is_input_iterator<std::input_iterator_tag> {static const bool value = true;};
-
+	
 	template<typename T>
 	struct is_integral{static const bool value = false;};
 
@@ -98,10 +97,10 @@ namespace ft
 	struct is_integral<bool> {static const bool value = true;};
 	template<>
 	struct is_integral<char> {static const bool value = true;};
-	// template<>
-	// struct is_integral<char16_t> {static const bool value = true;};
-	// template<>
-	// struct is_integral<char32_t> {static const bool value = true;};
+	template<>
+	struct is_integral<char16_t> {static const bool value = true;};
+	template<>
+	struct is_integral<char32_t> {static const bool value = true;};
 	template<>
 	struct is_integral<wchar_t> {static const bool value = true;};
 	template<>

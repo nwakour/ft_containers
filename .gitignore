@@ -36,3 +36,4 @@ ft_containers-unit-test
 .DS_Store
 a.out.dSYM
 .vscode
+containers_test

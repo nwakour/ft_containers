@@ -6,7 +6,7 @@
 /*   By: nwakour <nwakour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/31 17:32:45 by nwakour           #+#    #+#             */
-/*   Updated: 2022/05/04 18:08:13 by nwakour          ###   ########.fr       */
+/*   Updated: 2022/05/07 20:46:56 by nwakour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 #include <memory>
 #include "iterator.hpp"
-#include "pair.hpp"
+#include "utilities.hpp"
 #include "rb_tree.hpp"
 
 
@@ -49,10 +49,12 @@ namespace ft
 		typedef typename allocator_type::pointer							pointer;
 		typedef typename allocator_type::const_pointer						const_pointer;
 		typedef ft::rb_tree<value_type, tree_compare, allocator_type>		rb_tree;
-		typedef typename rb_tree::iterator									iterator;
-		typedef typename rb_tree::const_iterator							const_iterator;
-		typedef typename rb_tree::reverse_iterator							reverse_iterator;
-		typedef typename rb_tree::const_reverse_iterator					const_reverse_iterator;
+		typedef typename rb_tree::node_ptr									node_ptr;
+		typedef typename rb_tree::const_pointer								const_node_ptr;
+		typedef ft::RB_Iterator<value_type>									iterator;
+		typedef ft::const_RB_Iterator<value_type>							const_iterator;
+		typedef ft::reverse_iterator<iterator>								reverse_iterator;
+		typedef ft::reverse_iterator<const_iterator>						const_reverse_iterator;
 		
 		
 		
@@ -88,35 +90,35 @@ namespace ft
 		//! Iterators
 		iterator begin()
 		{
-			return (_tree.begin());
+			return (iterator(_tree.begin(), _tree.get__Nnull()));
 		}
 		const_iterator begin() const
 		{
-			return (_tree.begin());
+			return (const_iterator(_tree.begin(), _tree.get__Nnull()));
 		}
 		iterator end()
 		{
-			return (_tree.end());
+			return (iterator(_tree.get__Nnull(), _tree.get__Nnull()));
 		}
 		const_iterator end() const
 		{
-			return (_tree.end());
+			return (const_iterator(_tree.get__Nnull(), _tree.get__Nnull()));
 		}
 		reverse_iterator rbegin()
 		{
-			return (_tree.rbegin());
+			return (reverse_iterator(end()));
 		}
 		const_reverse_iterator rbegin() const
 		{
-			return (_tree.rbegin());
+			return (const_reverse_iterator(end()));
 		}
 		reverse_iterator rend()
 		{
-			return (_tree.rend());
+			return (reverse_iterator(begin()));
 		}
 		const_reverse_iterator rend() const
 		{
-			return (_tree.rend());
+			return (const_reverse_iterator(begin()));
 		}
 
 		//! Capacity
@@ -135,12 +137,26 @@ namespace ft
 		{
 			return (_tree[k]->val.second);
 		}
+		mapped_type& at( const Key& key )
+		{
+			return (_tree.at(key)->val.second);
+		}
+
+		const mapped_type& at( const Key& key ) const
+		{
+			return (_tree.at(key)->val.second);
+		}
 		//! Modifiers
 		pair<iterator,bool> insert (const value_type& val)
 		{
-			return (_tree.insert(val));
+			pair<node_ptr,bool> ret = _tree.insert(val);
+			return (ft::make_pair(iterator(ret.first, _tree.get__Nnull()), ret.second));
 		}
-		//iterator insert (iterator position, const value_type& val);
+		iterator insert (iterator position, const value_type& val)
+		{
+			(void)position;
+			return iterator(_tree.insert(val).first, _tree.get__Nnull());
+		}
 		template <class InputIterator>
   		void insert (InputIterator first, InputIterator last,
 		  	typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = 0)	
@@ -152,7 +168,7 @@ namespace ft
 		}
 		void erase (iterator position)
 		{
-			_tree.erase(position);
+			_tree.erase(position._it);
 		}
 		size_type erase (const key_type& val)
 		{
@@ -181,7 +197,7 @@ namespace ft
 		}
 		value_compare value_comp() const
 		{
-			return (value_compare());
+			return (value_compare(key_compare()));
 		}
 		
 		//! Operations
@@ -215,11 +231,13 @@ namespace ft
 		}
 		ft::pair<iterator,iterator> equal_range(const key_type& val)
 		{
-			return (_tree.equal_range(val));
+			ft::pair<node_ptr,node_ptr> ret = _tree.equal_range(val);
+			return (ft::make_pair(iterator(ret.first, _tree.get__Nnull()), iterator(ret.second, _tree.get__Nnull())));
 		}
 		pair<const_iterator,const_iterator> equal_range(const key_type& val) const
 		{
-			return (_tree.equal_range(val));
+			ft::pair<const_node_ptr,const_node_ptr> ret = _tree.equal_range(val);
+			return (ft::make_pair(const_iterator(ret.first, _tree.get__Nnull()), const_iterator(ret.second, _tree.get__Nnull())));
 		}
 		//! Allocator
 		allocator_type get_allocator() const

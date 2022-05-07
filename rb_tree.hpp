@@ -6,7 +6,7 @@
 /*   By: nwakour <nwakour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/08 16:17:12 by nwakour           #+#    #+#             */
-/*   Updated: 2022/05/05 13:48:07 by nwakour          ###   ########.fr       */
+/*   Updated: 2022/05/07 20:40:58 by nwakour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 #include <memory>
 #include <functional>
-#include "pair.hpp"
+#include "utilities.hpp"
 #include "iterator.hpp"
 #include <iostream>
 namespace ft
@@ -32,10 +32,10 @@ namespace ft
 		typedef typename node_allocator::pointer							node_ptr;
 		typedef typename node_allocator::size_type							size_type;
 		typedef typename node_allocator::const_pointer						const_pointer;
-		typedef ft::RB_Iterator<value_type>									iterator;
-		typedef ft::const_RB_Iterator<value_type>							const_iterator;
-		typedef ft::reverse_iterator<iterator>								reverse_iterator;
-		typedef ft::reverse_iterator<const_iterator>						const_reverse_iterator;
+		// typedef ft::RB_Iterator<value_type>									iterator;
+		// typedef ft::const_RB_Iterator<value_type>							const_iterator;
+		// typedef ft::reverse_iterator<iterator>								reverse_iterator;
+		// typedef ft::reverse_iterator<const_iterator>						const_reverse_iterator;
 
 	private:
 		value_compare _comp;
@@ -52,10 +52,16 @@ namespace ft
 			_root = _Nnull;
 		}
 
-		node_ptr get__Nnull() const
+		node_ptr get__Nnull()
 		{
 			return _Nnull;
 		}
+
+		const_pointer get__Nnull() const
+		{
+			return _Nnull;
+		}
+
 		node_ptr make_Nnull()
 		{
 			node_ptr Nnull;
@@ -98,13 +104,16 @@ namespace ft
 			return y;
 		}
 		rb_tree(const rb_tree &x) : _comp(x._comp), _node_alloc(x._node_alloc), _Nnull(make_Nnull()), _root(dup_rb_tree(x._root, _Nnull,x._Nnull)), _size(x._size)
-		{}
+		{
+			_Nnull->right = _root->max_node(_Nnull);
+		}
 		rb_tree &operator=(const rb_tree &x)
 		{
 			clear();
 			_comp = x._comp;
 			_node_alloc = x._node_alloc;
 			_root = dup_rb_tree(x._root, _Nnull, x._Nnull);
+			_Nnull->right = _root->max_node(_Nnull);
 			_size = x._size;
 			return *this;
 		}
@@ -256,6 +265,46 @@ namespace ft
 			}
 			return (_Nnull);
 		}
+
+		template <typename key_type>
+		node_ptr at (const key_type& k)
+		{
+			node_ptr x = _root;
+			node_ptr y = _Nnull;
+			
+			while (x != _Nnull)
+			{
+				y = x;
+				if (_comp(k, x->val))
+					x = x->left;
+				else if (_comp(x->val, k))
+					x = x->right;
+				else
+					return x;
+			}
+			throw std::out_of_range("map");
+		}
+
+
+		template <typename key_type>
+		const_pointer at (const key_type& k) const
+		{
+			const_pointer x = _root;
+			const_pointer y = _Nnull;
+			
+			while (x != _Nnull)
+			{
+				y = x;
+				if (_comp(k, x->val))
+					x = x->left;
+				else if (_comp(x->val, k))
+					x = x->right;
+				else
+					return x;
+			}
+			throw std::out_of_range("map");
+		}
+
 		template <typename key_type>
 		node_ptr operator[] (const key_type& k)
 		{
@@ -272,7 +321,7 @@ namespace ft
 				else
 					return x;
 			}
-			node_ptr newnode = new_node(make_pair(k,value_type().second));
+			node_ptr newnode = new_node(ft::make_pair(k,value_type().second));
 			newnode->parent = y;
 			if (y == _Nnull)
 				_root = newnode;
@@ -294,7 +343,7 @@ namespace ft
 			return newnode;
 		}
 		
-		ft::pair<iterator,bool> insert(node_ptr newnode)
+		ft::pair<node_ptr,bool> insert(node_ptr newnode)
 		{
 			node_ptr x = _root;
 			node_ptr y = _Nnull;
@@ -307,7 +356,7 @@ namespace ft
 				else if (_comp(x->val, newnode->val))
 					x = x->right;
 				else
-					return ft::make_pair(iterator(x, _Nnull),false);
+					return ft::make_pair(x,false);
 			}
 			newnode->parent = y;
 			if (y == _Nnull)
@@ -327,7 +376,7 @@ namespace ft
 				_Nnull->right = _root->max_node(_Nnull);
 			else
 				_Nnull->right = _Nnull->right->max_node(_Nnull);
-			return ft::make_pair(iterator(newnode, _Nnull),true);
+			return ft::make_pair(newnode,true);
 		}
 		void balance_insert(node_ptr newnode)
 		{
@@ -383,11 +432,11 @@ namespace ft
 			}
 			_root->black();
 		}
-
-		ft::pair<iterator,bool> insert(const value_type &val)
+		
+		ft::pair<node_ptr,bool> insert(const value_type &val)
 		{
 			node_ptr newnode = new_node(val);
-			ft::pair<iterator,bool> ret = insert(newnode);
+			ft::pair<node_ptr,bool> ret = insert(newnode);
 			if (ret.second == false)
 				clear_node(newnode);
 			return ret;
@@ -403,19 +452,10 @@ namespace ft
 				x->parent->right = y;
 			y->parent = x->parent;
 		}
-		void erase(iterator it)
-		{
-			erase(it._it);
-		}
-		template<typename Key>
-		bool erase(const Key& val)
-		{
-			node_ptr x = find(val);
-			if (x == _Nnull)
-				return false;
-			erase(x);
-			return true;
-		}
+		// void erase(iterator it)
+		// {
+		// 	erase(it._it);
+		// }
 		void erase(node_ptr del)
 		{
 			node_ptr x;
@@ -535,6 +575,16 @@ namespace ft
 		}
 		
 		template<typename Key>
+		bool erase(const Key& val)
+		{
+			node_ptr x = find(val);
+			if (x == _Nnull)
+				return false;
+			erase(x);
+			return true;
+		}
+
+		template<typename Key>
 		node_ptr lower_bound(const Key& val)
 		{
 			node_ptr x = _root;
@@ -641,7 +691,7 @@ namespace ft
 		}
 
 		template<typename Key>
-		ft::pair<iterator,iterator> equal_range(const Key& val)
+		ft::pair<node_ptr,node_ptr> equal_range(const Key& val)
 		{
 			node_ptr x = _root;
 			node_ptr y = _Nnull;
@@ -657,12 +707,12 @@ namespace ft
 					x = x->left;
 				}
 				else
-					return (ft::make_pair(iterator(x, _Nnull), iterator(y, _Nnull)));
+					return (ft::make_pair(x, x->Rb_tree_increment(_Nnull)));
 			}
-			return (ft::make_pair(iterator(y, _Nnull), iterator(y, _Nnull)));
+			return (ft::make_pair(y, y));
 		}
 
-		ft::pair<iterator,iterator> equal_range(const value_type& val) const
+		ft::pair<node_ptr,node_ptr> equal_range(const value_type& val) const
 		{
 			node_ptr x = _root;
 			node_ptr y = _Nnull;
@@ -678,16 +728,16 @@ namespace ft
 					x = x->left;
 				}
 				else
-					return (ft::make_pair(iterator(x, _Nnull), iterator(y, _Nnull)));
+					return (ft::make_pair(x, x->Rb_tree_increment(_Nnull)));
 			}
-			return (ft::make_pair(iterator(y, _Nnull), iterator(y, _Nnull)));
+			return (ft::make_pair(y, y));
 		}
 	
 		template<typename Key>
-		ft::pair<const_iterator,const_iterator> equal_range(const Key& val) const
+		ft::pair<const_pointer,const_pointer> equal_range(const Key& val) const
 		{
-			node_ptr x = _root;
-			node_ptr y = _Nnull;
+			const_pointer x = _root;
+			const_pointer y = _Nnull;
 			while (x != _Nnull)
 			{
 				if (_comp(x->val, val))
@@ -700,110 +750,82 @@ namespace ft
 					x = x->left;
 				}
 				else
-					return (ft::make_pair(const_iterator(x, _Nnull), const_iterator(y, _Nnull)));
+					return (ft::make_pair(x, x->Rb_tree_increment(_Nnull)));
 			}
-			return (ft::make_pair(const_iterator(y, _Nnull), const_iterator(y, _Nnull)));
+			return (ft::make_pair(y, y));
 		}
 
-		iterator begin()
+		node_ptr begin()
 		{
 			if (_root == _Nnull)
-				return iterator(_Nnull, _Nnull);
-			return iterator(_root->min_node(_Nnull), _Nnull);
+				return _Nnull;
+			return _root->min_node(_Nnull);
 		}
-		const_iterator begin() const
+		const_pointer begin() const
 		{
 			if (_root == _Nnull)
-				return const_iterator(_Nnull, _Nnull);
-			return const_iterator(_root->min_node(_Nnull), _Nnull);
+				return _Nnull;
+			return _root->min_node(_Nnull);
 		}
-		reverse_iterator rbegin()
+		// reverse_iterator rbegin()
+		// {
+		// 	return reverse_iterator(end());
+		// }
+		// const_reverse_iterator rbegin() const
+		// {
+		// 	return const_reverse_iterator(end());
+		// }
+		node_ptr end()
 		{
-			return reverse_iterator(end());
+			return _Nnull;
 		}
-		const_reverse_iterator rbegin() const
+		const_pointer end() const
 		{
-			return const_reverse_iterator(end());
+			return _Nnull;
 		}
-		iterator end()
-		{
-			return iterator(_Nnull, _Nnull);
-		}
-		const_iterator end() const
-		{
-			return const_iterator(_Nnull, _Nnull);
-		}
-		reverse_iterator rend()
-		{
-			return reverse_iterator(begin());
-		}
-		const_reverse_iterator rend() const
-		{
-			return const_reverse_iterator(begin());
-		}
+		// reverse_iterator rend()
+		// {
+		// 	return reverse_iterator(begin());
+		// }
+		// const_reverse_iterator rend() const
+		// {
+		// 	return const_reverse_iterator(begin());
+		// }
 
-		node_ptr insert_with_hint(node_ptr position, const value_type& val) // check if position is a valid place to insert val
-		{
-			if (position == _Nnull)
-				return insert(val);
-			if (_comp(val, position->val))
-			{
-				if (position->left == _Nnull)
-				{
-					position->left = new node(val, _Nnull, _Nnull, position);
-					return position->left;
-				}
-				else
-					return insert_with_hint(position->left, val);
-			}
-			else if (_comp(position->val, val))
-			{
-				if (position->right == _Nnull)
-				{
-					position->right = new node(val, _Nnull, _Nnull, position);
-					return position->right;
-				}
-				else
-					return insert_with_hint(position->right, val);
-			}
-			else
-				return position;
-					
-		}
-		void printHelper(node_ptr root, std::string indent, bool last) const
-		{
-			if (root != _Nnull)
-			{
-				std::cout << indent;
-				if (last) {
-					std::cout << "R----";
-					indent += "   ";
-				} else {
-					std::cout << "L----";
-					indent += "|  ";
-				}
+	
+		// void printHelper(node_ptr root, std::string indent, bool last) const
+		// {
+		// 	if (root != _Nnull)
+		// 	{
+		// 		std::cout << indent;
+		// 		if (last) {
+		// 			std::cout << "R----";
+		// 			indent += "   ";
+		// 		} else {
+		// 			std::cout << "L----";
+		// 			indent += "|  ";
+		// 		}
 
-				std::string sColor = root->is_black ? "BLACK" : "RED";
-				std::cout << root->val << "(" << sColor << ")" << std::endl;
-				printHelper(root->left, indent, false);
-				printHelper(root->right, indent, true);
-			}
-  		}
+		// 		std::string sColor = root->is_black ? "BLACK" : "RED";
+		// 		std::cout << root->val << "(" << sColor << ")" << std::endl;
+		// 		printHelper(root->left, indent, false);
+		// 		printHelper(root->right, indent, true);
+		// 	}
+  		// }
 		void swap(rb_tree &s)
 		{
 			std::swap(_root, s._root);
 			std::swap(_Nnull, s._Nnull);
 			std::swap(_comp, s._comp);
 			std::swap(_size, s._size);
-			std::swap(_node_alloc, s._node_alloc);
 		}
-		void printTree() const
-		{
-			if (_root != _Nnull)
-			{
-				printHelper(_root, "", true);
-			}
-		}
+		// void printTree() const
+		// {
+		// 	if (_root != _Nnull)
+		// 	{
+		// 		printHelper(_root, "", true);
+		// 	}
+		// }
 	};
 }
 #endif
