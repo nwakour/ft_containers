@@ -3,18 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   stack.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tenshi <tenshi@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nwakour <nwakour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/07 18:10:13 by tenshi            #+#    #+#             */
-/*   Updated: 2022/03/07 19:16:36 by tenshi           ###   ########.fr       */
+/*   Updated: 2022/05/08 14:24:38 by nwakour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef __STACK__H__
 #define __STACK__H__
 
-#include "vector.hpp"
-#include <stack>
+#include "../vector/vector.hpp"
 
 namespace ft
 {

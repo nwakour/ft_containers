@@ -6,7 +6,7 @@
 /*   By: nwakour <nwakour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/06 14:04:22 by nwakour           #+#    #+#             */
-/*   Updated: 2022/05/07 19:16:57 by nwakour          ###   ########.fr       */
+/*   Updated: 2022/05/08 14:52:35 by nwakour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,8 @@
 #define __VECTOR__H__
 
 #include <memory>
-#include "iterator.hpp"
-#include "utilities.hpp"
-// #include <stack>
+#include "../utility/iterator.hpp"
+#include "../utility/utilities.hpp"
 
 namespace ft
 {
@@ -235,7 +234,7 @@ namespace ft
 		
 		template <class ForwardIterator>
 		void assign (ForwardIterator first, ForwardIterator last,
-		typename ft::enable_if<!ft::is_integral<ForwardIterator>::value>::type* = 0) //! keep adding until throw (Basic guarantee)
+		typename ft::enable_if<!ft::is_integral<ForwardIterator>::value>::type* = 0)
 		{
 			difference_type diff = std::distance(first, last);
 			clear();
@@ -259,7 +258,7 @@ namespace ft
 			}
 		}
 		
-		void assign (size_type n, const value_type& val) //! keep adding until throw (Basic guarantee)
+		void assign (size_type n, const value_type& val)
 		{
 			clear();
 			if (n > _capacity)
@@ -527,14 +526,18 @@ namespace ft
 						}
 						else
 						{
-							
-							ForwardIterator tmp = last;
-							std::advance(tmp, (lsize - (_size - diff)));
-							mycopy_basic(tmp, last, _end, basic_len);
-							mycopy_basic(_start + diff, _end, _end + lsize - (_size - diff), basic_len);
-							tmp = first;
-							std::advance(tmp, (_size - diff));
-							myassign_basic_front(first, tmp, _start + diff, basic_len);
+							if ((size_type)(lsize + diff) < _size)
+							{
+								mycopy_basic(_end - lsize, _end, _end, basic_len);
+								myassign_basic_back(_end - (lsize + 1) , _start + (diff - 1), _end - 1, basic_len);
+								myassign_basic_front(first, last, _start + diff, basic_len);
+							}
+							else
+							{
+								mycopy_basic(last - (lsize - (_size - diff)), last, _end, basic_len);
+								mycopy_basic(_start + diff, _end, _end + lsize - (_size - diff), basic_len);
+								myassign_basic_front(first, first + (_size - diff), _start + diff, basic_len);
+							}
 						}
 					}
 				}
@@ -619,7 +622,7 @@ namespace ft
 			size_type			_capacity;
 			pointer				_end;
 			allocator_type		_alloc;
-		protected:
+		private:
         pointer myalloc(size_type n)
 		{
 			if (n > this->max_size())

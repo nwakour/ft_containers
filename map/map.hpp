@@ -6,7 +6,7 @@
 /*   By: nwakour <nwakour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/31 17:32:45 by nwakour           #+#    #+#             */
-/*   Updated: 2022/05/07 21:42:26 by nwakour          ###   ########.fr       */
+/*   Updated: 2022/05/08 14:20:31 by nwakour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,9 @@
 #define __MAP__H__
 
 #include <memory>
-#include "iterator.hpp"
-#include "utilities.hpp"
-#include "rb_tree.hpp"
+#include "../utility/iterator.hpp"
+#include "../utility/utilities.hpp"
+#include "../utility/rb_tree.hpp"
 
 
 namespace ft
@@ -63,19 +63,45 @@ namespace ft
 		public:
 	
 		//! constructor
-		explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) : _tree(comp, alloc) {}
+		explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) : _tree(comp, alloc) {
+			try
+			{
+				_tree = rb_tree(comp, alloc);
+			}
+			catch(const std::exception& e)
+			{
+				throw std::length_error("map");
+			}
+		}
 
 		template <class InputIterator>
   		map (InputIterator first, InputIterator last, const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type(),
-			typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = 0): _tree(comp, alloc)
+			typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = 0)
 		{
-			  for(; first != last; ++first)
+			try
+			{
+				_tree = rb_tree(comp, alloc);
+			}
+			catch(const std::exception& e)
+			{
+				throw std::length_error("map");
+			}
+			for(; first != last; ++first)
 			{
 				_tree.insert(*first);
 			}
 		}
 
-		map (const map& x) : _tree(x._tree) {}
+		map (const map& x){
+			try
+			{
+				_tree = x._tree;
+			}
+			catch(const std::exception& e)
+			{
+				throw std::length_error("map");
+			}
+		}
 		
 		//! destructor
 		~map(){

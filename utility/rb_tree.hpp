@@ -6,7 +6,7 @@
 /*   By: nwakour <nwakour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/08 16:17:12 by nwakour           #+#    #+#             */
-/*   Updated: 2022/05/07 21:53:09 by nwakour          ###   ########.fr       */
+/*   Updated: 2022/05/08 13:35:23 by nwakour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ namespace ft
 			return _Nnull;
 		}
 
-		const_pointer get__Nnull() const
+		node_ptr get__Nnull() const
 		{
 			return _Nnull;
 		}
@@ -380,8 +380,6 @@ namespace ft
 		}
 		void balance_insert(node_ptr newnode)
 		{
-			// printTree();
-			// std::cout << "\n";
 			while (newnode->parent != _Nnull && !newnode->parent->is_black)
 			{
 				node_ptr x = _Nnull;
@@ -452,10 +450,6 @@ namespace ft
 				x->parent->right = y;
 			y->parent = x->parent;
 		}
-		// void erase(iterator it)
-		// {
-		// 	erase(it._it);
-		// }
 		void erase(node_ptr del)
 		{
 			node_ptr x;
@@ -768,14 +762,7 @@ namespace ft
 				return _Nnull;
 			return _root->min_node(_Nnull);
 		}
-		// reverse_iterator rbegin()
-		// {
-		// 	return reverse_iterator(end());
-		// }
-		// const_reverse_iterator rbegin() const
-		// {
-		// 	return const_reverse_iterator(end());
-		// }
+
 		node_ptr end()
 		{
 			return _Nnull;
@@ -784,35 +771,7 @@ namespace ft
 		{
 			return _Nnull;
 		}
-		// reverse_iterator rend()
-		// {
-		// 	return reverse_iterator(begin());
-		// }
-		// const_reverse_iterator rend() const
-		// {
-		// 	return const_reverse_iterator(begin());
-		// }
 
-	
-		// void printHelper(node_ptr root, std::string indent, bool last) const
-		// {
-		// 	if (root != _Nnull)
-		// 	{
-		// 		std::cout << indent;
-		// 		if (last) {
-		// 			std::cout << "R----";
-		// 			indent += "   ";
-		// 		} else {
-		// 			std::cout << "L----";
-		// 			indent += "|  ";
-		// 		}
-
-		// 		std::string sColor = root->is_black ? "BLACK" : "RED";
-		// 		std::cout << root->val << "(" << sColor << ")" << std::endl;
-		// 		printHelper(root->left, indent, false);
-		// 		printHelper(root->right, indent, true);
-		// 	}
-  		// }
 		void swap(rb_tree &s)
 		{
 			std::swap(_root, s._root);
@@ -820,13 +779,6 @@ namespace ft
 			std::swap(_comp, s._comp);
 			std::swap(_size, s._size);
 		}
-		// void printTree() const
-		// {
-		// 	if (_root != _Nnull)
-		// 	{
-		// 		printHelper(_root, "", true);
-		// 	}
-		// }
 	};
 }
 #endif

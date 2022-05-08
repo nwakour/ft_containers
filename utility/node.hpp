@@ -6,7 +6,7 @@
 /*   By: nwakour <nwakour@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/29 23:02:57 by tenshi            #+#    #+#             */
-/*   Updated: 2022/04/06 21:41:51 by nwakour          ###   ########.fr       */
+/*   Updated: 2022/05/08 13:46:48 by nwakour          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,6 @@ namespace ft
 		node(const value_type& value):
 		parent(NULL), left(NULL), right(NULL), val(value), is_black(false){}
 		~node(){
-			// parent = left = right = NULL;
 		}
 		node(const node &cm){
 			*this = cm;
